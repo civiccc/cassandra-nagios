@@ -1,0 +1,68 @@
+--- nagios.sav/include/common.h	2013-03-15 04:14:02.000000000 -0700
++++ nagios/include/common.h	2013-05-16 21:30:48.254497698 -0700
+@@ -476,7 +476,7 @@
+ #define MAX_FILENAME_LENGTH			256	/* max length of path/filename that Nagios will process */
+ #define MAX_INPUT_BUFFER			1024	/* size in bytes of max. input buffer (for reading files, misc stuff) */
+ #define MAX_COMMAND_BUFFER                      8192    /* max length of raw or processed command line */
+-#define MAX_EXTERNAL_COMMAND_LENGTH             8192    /* max length of an external command */
++#define MAX_EXTERNAL_COMMAND_LENGTH             262144    /* max length of an external command */
+ 
+ #define MAX_DATETIME_LENGTH			48
+ 
+--- nagios.sav/include/nagios.h	2013-01-03 13:10:27.000000000 -0800
++++ nagios/include/nagios.h	2013-05-16 21:29:55.165343494 -0700
+@@ -43,7 +43,7 @@
+ 	   of MAX_EXTERNAL_COMMAND_LENGTH in common.h to allow for passive checks results received through the external
+ 	   command file. EG 10/19/07
+ 	*/
+-#define MAX_PLUGIN_OUTPUT_LENGTH                8192    /* max length of plugin output (including perf data) */
++#define MAX_PLUGIN_OUTPUT_LENGTH                262144    /* max length of plugin output (including perf data) */
+ 
+ 
+ 
+--- nagios.sav/p1.pl	2008-05-19 11:02:08.000000000 -0700
++++ nagios/p1.pl	2013-05-16 22:07:04.243658597 -0700
+@@ -1,3 +1,4 @@
++#!/usr/bin/perl
+  package Embed::Persistent;
+ 
+ # p1.pl for Nagios
+@@ -76,14 +77,14 @@
+ sub PRINT {
+ 	my $self = shift;
+ 	# $$self = substr(join('',@_), 0, 256) ;
+-	$$self .= substr(join('',@_), 0, 4096) ;
++	$$self .= substr(join('',@_), 0, 262144) ;
+ }
+ 
+ sub PRINTF {
+ 	my $self = shift;
+ 	my $fmt = shift;
+ 	# $$self = substr(sprintf($fmt,@_), 0, 256) ;
+-	$$self .= substr(sprintf($fmt,@_), 0, 4096) ;
++	$$self .= substr(sprintf($fmt,@_), 0, 262144) ;
+ }
+ 
+ sub READLINE {
+--- nagios.sav/cgi/status.c	2013-03-09 13:46:35.000000000 -0800
++++ nagios/cgi/status.c	2013-05-16 21:53:27.042958103 -0700
+@@ -69,7 +69,7 @@
+ 
+ static nagios_macros *mac;
+ 
+-#define MAX_MESSAGE_BUFFER		4096
++#define MAX_MESSAGE_BUFFER		262144
+ 
+ #define DISPLAY_HOSTS			0
+ #define DISPLAY_HOSTGROUPS		1
+--- nagios.sav/cgi/extinfo.c	2011-08-17 00:36:27.000000000 -0700
++++ nagios/cgi/extinfo.c	2013-05-16 21:53:44.992346819 -0700
+@@ -81,7 +81,7 @@
+ extern servicegroup *servicegroup_list;
+ 
+ 
+-#define MAX_MESSAGE_BUFFER		4096
++#define MAX_MESSAGE_BUFFER		262144
+ 
+ #define HEALTH_WARNING_PERCENTAGE       85
+ #define HEALTH_CRITICAL_PERCENTAGE      75
