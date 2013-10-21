@@ -5,7 +5,9 @@ This repo houses the work we did to monitor Cassandra using Nagios.
 How repo is structured:
 
   src - a patch to apply to nagios so that it does not truncate performance data
-  etc - sample nagios commands
+  examples - example configuration
+    nagios - example nagios configuration
+    jolokia - example jolokia configuration
   plugins - the check_cassandra.pl plugin and Jolokia.pm wrapper
 
 
@@ -51,17 +53,37 @@ should and/or we are monitoring things we probably shouldn't be.
 How:
 
 First, you may want to apply the patch in the src directory to Nagios. Nagios
-truncates plugin output at an arbitrary buffer size.
+truncates plugin output at an arbitrary buffer size. This step is only required
+if you are interested in collecting all of the performance output returned by
+the plugin. Without the patch nagios will truncate the performance data.
 
-Install the required perl modules:
+Configure Cassandra:
+
+Cassandra needs to be configured with the jolokia-agent[1]. The agent should be
+on the classpath. The easiest way is to drop the jolokia-jvm.jar into
+/usr/share/cassandra/lib.
+
+Add the following to cassandra-env.sh:
+
+# Load the jolokia agent
+JVM_OPTS="$JVM_OPTS -javaagent:/usr/share/cassandra/lib/jolokia-jvm-1.1.1-agent.jar=\
+config=/etc/cassandra/jolokia/jolokia.properties"
+
+Then copy the examples/jolokia/ to /etc/cassandra/jolokia/.
+
+Configure Nagios:
+
+Install the required perl modules on the nagios machine:
 
 sudo yum install perl-libwww-perl perl-JSON
 sudo apt-get install libwww-perl libjson-perl
 
-Configure nagios:
+Copy the plugins directory into the nagios plugins directory.
 
-See examples directory.
+Define nagios check commands similar to those in the examples directory.
 
 Collect performance data:
 
 Use graphios. Seriously, use graphios. It *just works*.
+
+[1] http://jolokia.org/agent/jvm.html
